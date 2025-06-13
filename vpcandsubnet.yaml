@@ -7,17 +7,6 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC
 
-Mappings: {}
-
-Conditions:
-  Has2AZs:
-    Fn::Not:
-      - Fn::Equals:
-          - Fn::Select:
-              - 1
-              - Fn::GetAZs: ''
-          - ""
-
 Resources:
   MyVPC:
     Type: AWS::EC2::VPC
@@ -32,19 +21,18 @@ Resources:
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: 10.0.1.0/24
-      AvailabilityZone: !Select [0, !GetAZs '']
+      AvailabilityZone: us-east-1a
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
           Value: "PublicSubnet1"
 
   PublicSubnet2:
-    Condition: Has2AZs
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: 10.0.2.0/24
-      AvailabilityZone: !Select [1, !GetAZs '']
+      AvailabilityZone: us-east-1b
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
@@ -55,19 +43,18 @@ Resources:
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: 10.0.3.0/24
-      AvailabilityZone: !Select [0, !GetAZs '']
+      AvailabilityZone: us-east-1a
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
           Value: "PrivateSubnet1"
 
   PrivateSubnet2:
-    Condition: Has2AZs
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
       CidrBlock: 10.0.4.0/24
-      AvailabilityZone: !Select [1, !GetAZs '']
+      AvailabilityZone: us-east-1b
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
