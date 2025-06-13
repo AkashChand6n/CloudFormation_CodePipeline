@@ -8,7 +8,11 @@ Parameters:
     Description: CIDR block for the VPC
 
 Conditions:
-  HasAtLeast2AZs: !GreaterThanOrEqual [2, !Length !GetAZs '']
+  HasAtLeast2AZs:
+    Fn::GreaterThanOrEqual:
+      - 2
+      - Fn::Length:
+          Fn::GetAZs: ''
 
 Resources:
   MyVPC:
