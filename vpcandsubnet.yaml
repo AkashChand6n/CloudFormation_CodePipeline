@@ -7,12 +7,16 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC
 
+Mappings: {}
+
 Conditions:
-  HasAtLeast2AZs:
-    Fn::GreaterThanOrEqual:
-      - 2
-      - Fn::Length:
-          Fn::GetAZs: ''
+  Has2AZs:
+    Fn::Not:
+      - Fn::Equals:
+          - Fn::Select:
+              - 1
+              - Fn::GetAZs: ''
+          - ""
 
 Resources:
   MyVPC:
@@ -35,7 +39,7 @@ Resources:
           Value: "PublicSubnet1"
 
   PublicSubnet2:
-    Condition: HasAtLeast2AZs
+    Condition: Has2AZs
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
@@ -58,7 +62,7 @@ Resources:
           Value: "PrivateSubnet1"
 
   PrivateSubnet2:
-    Condition: HasAtLeast2AZs
+    Condition: Has2AZs
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVPC
